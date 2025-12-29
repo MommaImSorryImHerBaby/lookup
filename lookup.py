@@ -7,13 +7,19 @@ import json
 import typing  
 import sys 
 import os
+import random
 
-# json file
-# snusbase/anti api keys r needed:
+# json file 
 config: dict[str, str] = json.load(open('./config/config.json'))
+# proxy file 
+proxies                = open('./config/proxies.txt').readlines()
 
 
 class Auto:
+    @staticmethod 
+    def get_proxy(): # return random proxy from list 
+        return random.choice(proxies).strip().replace('\n', '')
+    
     def queue_email_ANTI(self: Auto, email: str) -> dict[str, str | None]:
         # queue search 4 email
         # check if email has a valid format 
@@ -29,6 +35,9 @@ class Auto:
             },
             headers={ # insert user-agent headers here 
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
+            }, # use a proxy 
+            proxies={
+                'http': self.get_proxy()
             }
         )
         # extract the json data 
@@ -69,6 +78,9 @@ class Auto:
             headers={ # snusbase api-key
                 "Auth": config['snusbase'],
                 "content-type": "application/json"
+            },
+            proxies={
+                'http': self.get_proxy()
             },
             timeout=30
 
@@ -153,7 +165,7 @@ class Auto:
             # get file basename first
             basename = os.path.basename(sys.argv[2])[:-4]
             # more worker threads == faster processing speeds
-            for result in self.thread_handler(workers=7):
+            for result in self.thread_handler(workers=15):
                 # check the dict keys for error codes for error handling
                 if not 'error_code' in result.keys():
                     with open(f'{basename}-doxxed.txt', 'a+') as export:
@@ -168,5 +180,4 @@ class Auto:
 
 
 if __name__ == "__main__":
-
    Auto() 
