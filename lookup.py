@@ -8,7 +8,8 @@ import typing
 import sys 
 import os
 
-# json file 
+# json file
+# snusbase/anti api keys r needed:
 config: dict[str, str] = json.load(open('./config/config.json'))
 
 
@@ -167,4 +168,5 @@ class Auto:
 
 
 if __name__ == "__main__":
+
    Auto() 
