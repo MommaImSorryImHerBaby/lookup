@@ -10,9 +10,9 @@ import os
 import random
 
 # json file 
-config: dict[str, str] = json.load(open('./config/config.json'))
+config:  dict[str, str] = json.load(open('./config/config.json'))
 # proxy file 
-proxies                = open('./config/proxies.txt').readlines()
+proxies: list[str]      = open('./config/proxies.txt').readlines()
 
 
 class Auto:
