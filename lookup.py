@@ -24,7 +24,7 @@ class Auto:
         # queue search 4 email
         # check if email has a valid format 
         if not "@" in email or not "." in email:
-            raise Exception(f"email: [{email}] is not valid.") 
+            return {'error_code': 'invalid email'}
         # continue if the email is valid
         # make the request 
         response = requests.get(
@@ -65,8 +65,8 @@ class Auto:
     def queue_email_SNUSBASE(self: Auto, email: str) -> dict[str, str | None]:
         # queue snusbase email search
         # pass
-        if not ("@" in email) or (not "." in email): 
-            raise Exception(f"email: {email} is invalid.")
+        if not ("@" in email) or not ("." in email): 
+            return {'error_code': 'invalid_email'}
 
         response = requests.post(
             url='https://api.snusbase.com/data/search',
