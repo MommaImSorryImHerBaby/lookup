@@ -45,7 +45,7 @@ class Auto:
         # check for errors
         if 'error' in data:
             return { # error                                                                                                                                                                                                                                                                                        
-            'email': email,
+                'email': email,
                 'error_code': '0_ANTIAPI', 
                 'name': None, 
                 'dob': None, 
