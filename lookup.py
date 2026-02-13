@@ -1,4 +1,5 @@
 # -- Autodoxxer by @daddymica -- 
+
 # threadpool module
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -53,13 +54,15 @@ class Auto:
                 'addresses': [], 
                 'address': None
             }
+        print(f'[~] we found something... name: {data['name']} | email: {email}')
         # return full dict 
         return {
-            'name': data['name'],
-            'dob': data['dob'],
-            'phones': data['numbers'],
+            'name':      data['name'],
+            'email':     email,
+            'dob':       data['dob'],
+            'phones':    data['numbers'],
             'addresses': data.get('addresses'),
-            'address': data['addresses'][0] if data.get('addresses', None) else None
+            'address':   data['addresses'] 
         } 
     
     def queue_email_SNUSBASE(self: Auto, email: str) -> dict[str, str | None]:
@@ -120,16 +123,17 @@ class Auto:
             if os.path.exists(sys.argv[2]):
                 with open(sys.argv[2], 'r') as file:
                     # extract targs as an array 
-                    self.lines = file.readlines()
+                    self.lines = [line.rstrip('\n') for line in file]
  
         # check the argvar
         if len(sys.argv) < 2:
             # print menu
-            print("""Anti-Autodxxer by @ih8ngaz!
-            options:
-                [-s/--search] [searches anti-api by default]
-                [-f/--file]   [doxxes lines]  
-                [--snusbase]  [specify snusbase with search]                
+            print("""AutoDoxxer/BulkSearch CLI Tool (ANTI & SNUSBASE)
+            -------------------------------------------------------
+                [-s/--search]   [single email search]
+                [-f/--file]     [bulk-lookup using anti-api]  
+                [-p/--prettify] [parses lines neatly for callers]  
+                [--snusbase]    [specify snusbase with search]                
         """) 
             exit()
         # 'parse'
@@ -164,14 +168,27 @@ class Auto:
             # doxx file lines
             # get file basename first
             basename = os.path.basename(sys.argv[2])[:-4]
+            control = 0
             # more worker threads == faster processing speeds
-            for result in self.thread_handler(workers=15):
+            for index, result in enumerate(self.thread_handler(workers=30)):
                 # check the dict keys for error codes for error handling
                 if not 'error_code' in result.keys():
-                    with open(f'{basename}-doxxed.txt', 'a+') as export:
-                        export.write(f'{result}\n') # new line    
+                    with open(f'{basename}-doxxed.txt', 'a+', encoding='utf-8', errors='ignore') as export:
+                        print('[!] finished bulk-lookup, filtering doxxes...')
+                        # check if result has a phone number (dict) // we need PHONES for callers
+                        if len(result['phones']):
+                            # increment the control var
+                            control += 1
+                            # now we can print to screen 
+                            print(f'[+] found result at index: {index} with phone(s) attached:  name: {result['name']} | email: {result['email']} | phone(s): {result['phones']}')
+                            # check addresses
+                            if not len(result['addresses']):
+                                result['addresses'] = 'N/A'
+                            # only save doxxes with a phone number
+                            export.write(f'Name: {result['name']} | Email: {result['email']} | Phone(s): {result['phones']} | Address(es): {result['addresses']}\n') # new line    
             # dbg output
-            print(f"exported to: {basename}-doxxed.txt!")   
+            print(f"[~] doxxed {control} targ(s) with phone numbers!")
+            print(f"[~] exported to: {basename}-doxxed.txt!")   
             exit()        
         
         
