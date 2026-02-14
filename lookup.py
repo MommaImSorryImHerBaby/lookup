@@ -118,24 +118,24 @@ class Auto:
     # constructor
     def __init__(self: Auto):
         # load lines first 
-        # check filepath
+        # check the argvar
+        if len(sys.argv) < 2 or (sys.argv[1].lower() == '--help') or (sys.argv[1].lower() == '-h'):
+            # print menu
+            print("""\n\tAutoDoxxer/BulkSearch CLI Tool [creds: @josh5302 on telegram]
+       -----------------------------------------------------------------
+            [-s/--search <email@email.com>] [single email search]
+            [-f/--file <emails.txt>]        [bulk-lookup using anti-api]               
+        """) 
+            exit()
+        # check if its over 2 now 
         if len(sys.argv) > 2:
             if os.path.exists(sys.argv[2]):
                 with open(sys.argv[2], 'r') as file:
                     # extract targs as an array 
                     self.lines = [line.rstrip('\n') for line in file]
- 
-        # check the argvar
-        if len(sys.argv) < 2:
-            # print menu
-            print("""AutoDoxxer/BulkSearch CLI Tool (ANTI & SNUSBASE)
-            -------------------------------------------------------
-                [-s/--search]   [single email search]
-                [-f/--file]     [bulk-lookup using anti-api]  
-                [-p/--prettify] [parses lines neatly for callers]  
-                [--snusbase]    [specify snusbase with search]                
-        """) 
-            exit()
+        # title n shi
+        os.system(f'cls & title Loaded {len(self.lines)} Email(s)')
+
         # 'parse'
         if (sys.argv[1].lower() == "-s") or (sys.argv[1].lower() == '--search'):
             # check if they want snusbase
